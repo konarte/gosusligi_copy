@@ -20,6 +20,7 @@ def setup_dispatcher(dp):
 
     dp.add_handler(CommandHandler("start", commands.start_command))
     dp.add_handler(CommandHandler("help", commands.help_command))
+    dp.add_handler(CommandHandler("contact", commands.contact_command))
 
     # admin commands
     dp.add_handler(CommandHandler("admin", admin.admin))
