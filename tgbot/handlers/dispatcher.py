@@ -60,7 +60,7 @@ def run_webhook():
 
     print(f"hooking of '{bot_link}' started")
     # TODO: why is port 8000 there? it might die because of it
-    updater.start_webhook(listen='0.0.0.0', port=8000, url_path='tgbot/telegram_webhook_thing',
+    updater.start_webhook(listen='0.0.0.0', port=80, url_path='tgbot/telegram_webhook_thing',
                           webhook_url=f'https://{settings.HOSTNAME}/tgbot/telegram_webhook_thing')
     updater.idle()
 
