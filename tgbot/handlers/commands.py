@@ -2,7 +2,7 @@ import os
 import random
 
 from pyqrcode import QRCode
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import CallbackContext, ConversationHandler
 from main.models import PageInfo
 
@@ -25,7 +25,7 @@ def bug_report(update: Update, context: CallbackContext):
 
 
 def proceed_with_bug_report(update: Update, context: CallbackContext):
-    update.message.reply_text(BUG_REPORT_PROCEED)
+    update.message.reply_text(BUG_REPORT_PROCEED, reply_markup=ReplyKeyboardRemove())
     return 1
 
 
@@ -37,7 +37,7 @@ def thanks_for_bugreport(update, context):
 
 
 def cancel_bugreport(update, context):
-    update.message.reply_text(BUGREPORT_CANCEL)
+    update.message.reply_text(BUGREPORT_CANCEL, reply_markup=ReplyKeyboardRemove())
     return ConversationHandler.END
 
 
