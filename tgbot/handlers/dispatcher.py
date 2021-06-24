@@ -69,6 +69,21 @@ def run_webhook():
     updater.idle()
 
 
+def run_pooling():
+    """ Run bot in pooling mode """
+    updater = Updater(TELEGRAM_TOKEN, use_context=True)
+
+    dp = updater.dispatcher
+    dp = setup_dispatcher(dp)
+
+    bot_info = telegram.Bot(TELEGRAM_TOKEN).get_me()
+    bot_link = f"https://t.me/" + bot_info["username"]
+
+    print(f"Pooling of '{bot_link}' started")
+    updater.start_polling()
+    updater.idle()
+
+
 def process_telegram_event(update_json):
     update = telegram.Update.de_json(update_json, bot)
     dispatcher.process_update(update)
