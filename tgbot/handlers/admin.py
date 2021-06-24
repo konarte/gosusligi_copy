@@ -5,7 +5,7 @@ from django.utils.timezone import now
 
 from main.models import PageInfo
 from tgbot.handlers import static_text
-from tgbot.handlers.utils import handler_logging
+from tgbot.ihatethis import handler_logging
 from tgbot.models import User
 
 

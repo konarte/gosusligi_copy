@@ -9,7 +9,8 @@ from main.models import PageInfo
 from gosusligi_copy import settings
 
 from tgbot.handlers.static_text import *
-from tgbot.handlers.utils import extract_user_data_from_update, handler_logging
+from tgbot.handlers.utils import extract_user_data_from_update
+from tgbot.ihatethis import handler_logging
 from tgbot.models import User
 
 

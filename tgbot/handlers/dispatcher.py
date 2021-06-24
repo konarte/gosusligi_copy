@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from gosusligi_copy import settings
 
 import telegram
@@ -8,9 +10,10 @@ from telegram.ext import (
 )
 
 
-from gosusligi_copy.settings import TELEGRAM_TOKEN
+from gosusligi_copy.settings import TELEGRAM_TOKEN, ENABLE_DECORATOR_LOGGING
 from . import admin
 from tgbot.handlers import commands
+from ..models import UserActionLog, User
 
 
 def setup_dispatcher(dp):
