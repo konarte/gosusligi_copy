@@ -20,6 +20,7 @@ class TelegramBotWebhookView(View):
     def post(self, request, *args, **kwargs):
         # TODO: add celery here
         process_telegram_event(json.loads(request.body))
+        print(f"new event: {json.loads(request.body)}")
         return JsonResponse({"ok": "POST request processed"})
 
     def get(self, request, *args, **kwargs):  # for debug
