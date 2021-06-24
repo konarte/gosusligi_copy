@@ -9,10 +9,11 @@ from main.models import PageInfo
 from gosusligi_copy import settings
 
 from tgbot.handlers.static_text import *
-from tgbot.handlers.utils import extract_user_data_from_update
+from tgbot.handlers.utils import extract_user_data_from_update, handler_logging
 from tgbot.models import User
 
 
+@handler_logging
 def start_command(update, context):
     u, created = User.get_user_and_created(update, context)
 
@@ -29,6 +30,7 @@ def start_command(update, context):
     ]]))
 
 
+@handler_logging
 def okay_lets_start(update: Update, context: CallbackContext):
     update.callback_query.answer()
     u = User.objects.filter(user_id=extract_user_data_from_update(update)['user_id']).first()
@@ -39,6 +41,7 @@ def okay_lets_start(update: Update, context: CallbackContext):
     return 0
 
 
+@handler_logging
 def name(update: Update, context):
     u = User.objects.filter(user_id=update.message.from_user.id).first()
     text_to_send = PLEASE_SEND_DATE_OF_BIRTH
@@ -50,6 +53,7 @@ def name(update: Update, context):
     return 1
 
 
+@handler_logging
 def date_of_birth(update, context):
     u = User.objects.filter(user_id=update.message.from_user.id).first()
     text_to_send = PLEASE_SEND_FIRST_2_DIGITS
@@ -60,6 +64,7 @@ def date_of_birth(update, context):
     return 2
 
 
+@handler_logging
 def passport_2_digits(update, context):
     u = User.objects.filter(user_id=update.message.from_user.id).first()
     text_to_send = PLEASE_SEND_LAST_3_DIGITS
@@ -71,6 +76,7 @@ def passport_2_digits(update, context):
     return 3
 
 
+@handler_logging
 def passport_3_digits(update, context):
     u = User.objects.filter(user_id=update.message.from_user.id).first()
     pi = PageInfo.objects.filter(creator=u).order_by('creation_date').last()
@@ -93,6 +99,7 @@ def passport_3_digits(update, context):
     return 4
 
 
+@handler_logging
 def cancel(update: Update, context):
     update.callback_query.answer()
     u = User.objects.filter(user_id=extract_user_data_from_update(update)['user_id']).first()
@@ -103,6 +110,7 @@ def cancel(update: Update, context):
     return ConversationHandler.END
 
 
+@handler_logging
 def done(update, context: CallbackContext):
     update.callback_query.answer()
     u = User.objects.filter(user_id=extract_user_data_from_update(update)['user_id']).first()
@@ -118,11 +126,13 @@ def done(update, context: CallbackContext):
     return ConversationHandler.END
 
 
+@handler_logging
 def help_command(update, context):
     text_to_send = HELP_MESSAGE
     context.dispatcher.bot.send_message(chat_id=extract_user_data_from_update(update)['user_id'], text=text_to_send)
 
 
+@handler_logging
 def contact_command(update, context):
     text_to_send = CONTACT_MESSAGE
     context.dispatcher.bot.send_message(chat_id=extract_user_data_from_update(update)['user_id'], text=text_to_send)

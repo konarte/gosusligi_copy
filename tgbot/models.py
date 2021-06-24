@@ -52,3 +52,12 @@ class User(models.Model):
 
     def invited_users(self):  # --> User queryset
         return User.objects.filter(deep_link=str(self.user_id), created_at__gt=self.created_at)
+
+
+class UserActionLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    action = models.CharField(max_length=128)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"user: {self.user}, made: {self.action}, created at {self.created_at.strftime('(%H:%M, %d %B %Y)')}"

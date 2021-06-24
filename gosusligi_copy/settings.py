@@ -6,6 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_GOS_SECRET_KEY")
 
 DEBUG = bool(int(os.getenv("DJANGO_GOS_DEBUG")))
+ENABLE_DECORATOR_LOGGING = True
 
 HOSTNAME = 'gosuslygi.com'
 TELEGRAM_TOKEN = os.getenv("TG_TOKEN_GOS")

@@ -5,9 +5,11 @@ from django.utils.timezone import now
 
 from main.models import PageInfo
 from tgbot.handlers import static_text
+from tgbot.handlers.utils import handler_logging
 from tgbot.models import User
 
 
+@handler_logging
 def admin(update, context):
     """ Show help info about all secret admins commands """
     u = User.get_user(update, context)
@@ -17,6 +19,7 @@ def admin(update, context):
     return update.message.reply_text(static_text.secret_admin_commands)
 
 
+@handler_logging
 def bot_stats(update, context):
     u = User.get_user(update, context)
     if not u.is_admin:
@@ -33,6 +36,7 @@ def bot_stats(update, context):
     )
 
 
+@handler_logging
 def site_stats(update, context):
     u = User.get_user(update, context)
     if not u.is_admin:
