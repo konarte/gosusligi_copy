@@ -6,9 +6,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_GOS_SECRET_KEY")
 # SECRET_KEY = 'nONE'
 
-# DEBUG = bool(int(os.getenv("DJANGO_GOS_DEBUG")))
+DEBUG = bool(int(os.getenv("DJANGO_GOS_DEBUG")))
 # DEBUG = True
-DEBUG = False
+# DEBUG = False
 ENABLE_DECORATOR_LOGGING = True
 
 HOSTNAME = 'www.gosuslygi.com'

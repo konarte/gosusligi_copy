@@ -15,7 +15,7 @@ from tgbot.models import User
 
 
 @handler_logging
-def start_command(update, context):
+def start_command(update: Update, context):
     u, created = User.get_user_and_created(update, context)
 
     # TODO: use static_text.py
@@ -26,7 +26,9 @@ def start_command(update, context):
         text = OLD_USER_START_COMMAND
         # text = static_text.start_not_created.format(first_name=u.first_name)
     # TODO: has a keyboard with a button that says "lets go" or smthing
-    update.message.reply_text(text=text, reply_markup=InlineKeyboardMarkup([[
+    example_image_link = 'https://media.discordapp.net/attachments/650329394069635073/857746116597645362/2021-06' \
+                         '-25_011345.png'
+    update.message.reply_photo(photo=example_image_link, caption=text, reply_markup=InlineKeyboardMarkup([[
         InlineKeyboardButton(START_COMMAND_BUTTON, callback_data=f'ok_lets_start')
     ]]))
 
