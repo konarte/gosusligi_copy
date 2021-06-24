@@ -1,5 +1,3 @@
-from django.utils import timezone
-
 from gosusligi_copy import settings
 
 import telegram
@@ -9,11 +7,9 @@ from telegram.ext import (
     CallbackQueryHandler, ConversationHandler,
 )
 
-
-from gosusligi_copy.settings import TELEGRAM_TOKEN, ENABLE_DECORATOR_LOGGING
+from gosusligi_copy.settings import TELEGRAM_TOKEN
 from . import admin
 from tgbot.handlers import commands
-from ..models import UserActionLog, User
 
 
 def setup_dispatcher(dp):
@@ -31,7 +27,7 @@ def setup_dispatcher(dp):
     dp.add_handler(CommandHandler("site_stats", admin.site_stats))
 
     # noinspection PyTypeChecker
-    conv_handler = ConversationHandler(
+    vaccine_conv_handler = ConversationHandler(
         entry_points=[CallbackQueryHandler(commands.okay_lets_start, pattern='^ok_lets_start$')],
         states={
             # TODO: add a fallback or something so that if you mess up the regex it doesnt ignore ya
@@ -47,8 +43,19 @@ def setup_dispatcher(dp):
         },
         fallbacks=[CommandHandler('cancel', commands.cancel)],
     )
-    dp.add_handler(conv_handler)
+    dp.add_handler(vaccine_conv_handler)
 
+    bug_conv_handler = ConversationHandler(
+        entry_points=[CommandHandler('bugreport', commands.bug_report)],
+        states={
+            0: [MessageHandler(Filters.text(['Да, я нашел баг']), commands.proceed_with_bug_report)],
+            1: [MessageHandler(Filters.all, commands.thanks_for_bugreport)]
+        },
+        fallbacks=[CommandHandler('cancel', commands.cancel_bugreport),
+                   MessageHandler(Filters.text('Нет, я просто смотрел вокруг'), commands.cancel_bugreport)]
+    )
+
+    dp.add_handler(bug_conv_handler)
     return dp
 
 

@@ -20,7 +20,7 @@ class User(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'@{self.username}' if self.username is not None else f'{self.user_id}'
+        return f'@{self.username}' if self.username is not None else f'#{self.user_id}'
 
     @classmethod
     def get_user_and_created(cls, update, context):
@@ -61,3 +61,14 @@ class UserActionLog(models.Model):
 
     def __str__(self):
         return f"user: {self.user}, made: {self.action}, created at {self.created_at.strftime('(%H:%M, %d %B %Y)')}"
+
+
+class BugReport(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    description = models.TextField(max_length=5000)
+
+    is_handled = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user} at {self.created_at}: {self.description[:15]}"

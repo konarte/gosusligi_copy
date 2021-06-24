@@ -2,7 +2,7 @@ import os
 import random
 
 from pyqrcode import QRCode
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from telegram.ext import CallbackContext, ConversationHandler
 from main.models import PageInfo
 
@@ -11,7 +11,34 @@ from gosusligi_copy import settings
 from tgbot.handlers.static_text import *
 from tgbot.handlers.utils import extract_user_data_from_update
 from tgbot.ihatethis import handler_logging
-from tgbot.models import User
+from tgbot.models import User, BugReport
+
+
+@handler_logging
+def bug_report(update: Update, context: CallbackContext):
+    reply_keyboard = [["Нет, я просто смотрел вокруг", "Да, я нашел баг"]]
+    update.message.reply_text(
+        BUG_REPORT_WELCOME,
+        reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
+    )
+    return 0
+
+
+def proceed_with_bug_report(update: Update, context: CallbackContext):
+    update.message.reply_text(BUG_REPORT_PROCEED)
+    return 1
+
+
+def thanks_for_bugreport(update, context):
+    update.message.reply_text(THANKS_FOR_BUG_REPORT)
+    BugReport.objects.create(description=update.message.text, user=User.get_user(update, context))
+
+    return ConversationHandler.END
+
+
+def cancel_bugreport(update, context):
+    update.message.reply_text(BUGREPORT_CANCEL)
+    return ConversationHandler.END
 
 
 @handler_logging
@@ -25,7 +52,6 @@ def start_command(update: Update, context):
     else:
         text = OLD_USER_START_COMMAND
         # text = static_text.start_not_created.format(first_name=u.first_name)
-    # TODO: has a keyboard with a button that says "lets go" or smthing
     example_image_link = 'https://media.discordapp.net/attachments/650329394069635073/857746116597645362/2021-06' \
                          '-25_011345.png'
     update.message.reply_photo(photo=example_image_link, caption=text, reply_markup=InlineKeyboardMarkup([[
@@ -33,7 +59,6 @@ def start_command(update: Update, context):
     ]]))
 
 
-@handler_logging
 def okay_lets_start(update: Update, context: CallbackContext):
     update.callback_query.answer()
     u = User.objects.filter(user_id=extract_user_data_from_update(update)['user_id']).first()
@@ -44,45 +69,38 @@ def okay_lets_start(update: Update, context: CallbackContext):
     return 0
 
 
-@handler_logging
 def name(update: Update, context):
-    u = User.objects.filter(user_id=update.message.from_user.id).first()
     text_to_send = PLEASE_SEND_DATE_OF_BIRTH
     context.dispatcher.bot.send_message(chat_id=extract_user_data_from_update(update)['user_id'],
                                         text=text_to_send)
-    pi = PageInfo.objects.filter(creator=u).order_by('creation_date').last()
+    pi = PageInfo.objects.filter(creator=User.get_user(update, context)).order_by('creation_date').last()
     pi.name = update.message.text
     pi.save()
     return 1
 
 
-@handler_logging
 def date_of_birth(update, context):
-    u = User.objects.filter(user_id=update.message.from_user.id).first()
     text_to_send = PLEASE_SEND_FIRST_2_DIGITS
     context.dispatcher.bot.send_message(chat_id=extract_user_data_from_update(update)['user_id'], text=text_to_send)
-    pi = PageInfo.objects.filter(creator=u).order_by('creation_date').last()
+    pi = PageInfo.objects.filter(creator=User.get_user(update, context)).order_by('creation_date').last()
     pi.date_of_birth = update.message.text
     pi.save()
     return 2
 
 
-@handler_logging
 def passport_2_digits(update, context):
-    u = User.objects.filter(user_id=update.message.from_user.id).first()
     text_to_send = PLEASE_SEND_LAST_3_DIGITS
     context.dispatcher.bot.send_message(chat_id=extract_user_data_from_update(update)['user_id'],
                                         text=text_to_send)
-    pi = PageInfo.objects.filter(creator=u).order_by('creation_date').last()
+    pi = PageInfo.objects.filter(creator=User.get_user(update, context)).order_by('creation_date').last()
     pi.first_two_passport_numbers = update.message.text
     pi.save()
     return 3
 
 
-@handler_logging
 def passport_3_digits(update, context):
     u = User.objects.filter(user_id=update.message.from_user.id).first()
-    pi = PageInfo.objects.filter(creator=u).order_by('creation_date').last()
+    pi = PageInfo.objects.filter(creator=User.get_user(update, context)).order_by('creation_date').last()
     text_to_send = CONFIRMATION_TEXT.format(
         name=pi.name,
         date_of_birth=pi.date_of_birth,
@@ -102,7 +120,6 @@ def passport_3_digits(update, context):
     return 4
 
 
-@handler_logging
 def cancel(update: Update, context):
     update.callback_query.answer()
     u = User.objects.filter(user_id=extract_user_data_from_update(update)['user_id']).first()
