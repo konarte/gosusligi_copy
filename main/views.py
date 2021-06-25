@@ -1,10 +1,8 @@
-from django.http import HttpResponse
-from django.shortcuts import render
-
+from django.shortcuts import render, redirect
 from main.models import PageInfo
 
 
-def index(request, uuid):
+def vaccine_page(request, uuid):
     # really hope this works
     page_object = PageInfo.objects.get(uuid=uuid)
     name = page_object.name.split()
@@ -17,5 +15,10 @@ def index(request, uuid):
                              "first_two_passport_numbers": page_object.first_two_passport_numbers,
                              "last_three_passport_numbers": page_object.last_three_passport_numbers}}
     return render(request, 'index.html', context=context)
+
+
+def index(request):
+    return redirect("https://www.gosuslugi.ru")
+
 
 

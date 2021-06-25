@@ -19,5 +19,7 @@ class PageInfo(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
+        if self.creator is None:
+            return 'tf this one doesnt have a creator'
         return f'PageInfo - [{self.name if self.name is not "" else "В процессе"}], ' \
                f'[{self.creator.username if self.creator.username is not None else self.creator.user_id}]'
