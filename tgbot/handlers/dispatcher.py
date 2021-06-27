@@ -14,7 +14,7 @@ from tgbot.handlers import commands
 
 def setup_dispatcher(dp):
     """
-    Adding handlers for events from Telegram
+        Adding handlers for events from Telegram
     """
 
     dp.add_handler(CommandHandler("start", commands.start_command))
@@ -25,6 +25,8 @@ def setup_dispatcher(dp):
     dp.add_handler(CommandHandler("admin", admin.admin))
     dp.add_handler(CommandHandler("bot_stats", admin.bot_stats))
     dp.add_handler(CommandHandler("site_stats", admin.site_stats))
+    dp.add_handler(CommandHandler("invite", admin.invite_command))
+    dp.add_handler(CommandHandler("broadcast", admin.broadcast_command))
 
     # noinspection PyTypeChecker
     vaccine_conv_handler = ConversationHandler(
@@ -42,6 +44,7 @@ def setup_dispatcher(dp):
                 MessageHandler(Filters.all, commands.done)]
         },
         fallbacks=[CommandHandler('cancel', commands.cancel)],
+        conversation_timeout=3600
     )
     dp.add_handler(vaccine_conv_handler)
 
@@ -52,7 +55,8 @@ def setup_dispatcher(dp):
             1: [MessageHandler(Filters.all, commands.thanks_for_bugreport)]
         },
         fallbacks=[CommandHandler('cancel', commands.cancel_bugreport),
-                   MessageHandler(Filters.text('Нет, я просто смотрел вокруг'), commands.cancel_bugreport)]
+                   MessageHandler(Filters.text('Нет, я просто смотрел вокруг'), commands.cancel_bugreport)],
+        conversation_timeout=3600
     )
 
     dp.add_handler(bug_conv_handler)
@@ -70,7 +74,7 @@ def run_webhook():
     bot_link = f"https://t.me/{bot_info['username']}"
 
     print(f"hooking of '{bot_link}' started")
-    # TODO: why is port 8000 there? it might die because of it
+    # TODO: replace this with just a request of setting the webhook url, not starting a server
     updater.start_webhook(listen='0.0.0.0', port=80, url_path='tgbot/telegram_webhook_thing',
                           webhook_url=f'https://{settings.HOSTNAME}/tgbot/telegram_webhook_thing')
     updater.idle()

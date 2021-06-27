@@ -15,6 +15,7 @@ class User(models.Model):
 
     is_admin = models.BooleanField(default=False)
     is_moderator = models.BooleanField(default=False)
+    is_invited = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

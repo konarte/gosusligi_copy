@@ -45,13 +45,7 @@ def cancel_bugreport(update, context):
 def start_command(update: Update, context):
     u, created = User.get_user_and_created(update, context)
 
-    # TODO: use static_text.py
-    if created:
-        text = NEW_USER_START_COMMAND
-        # text = static_text.start_created.format(first_name=u.first_name)
-    else:
-        text = OLD_USER_START_COMMAND
-        # text = static_text.start_not_created.format(first_name=u.first_name)
+    text = NEW_USER_START_COMMAND
     example_image_link = 'https://media.discordapp.net/attachments/650329394069635073/857746116597645362/2021-06' \
                          '-25_011345.png'
     update.message.reply_photo(photo=example_image_link, caption=text, reply_markup=InlineKeyboardMarkup([[
@@ -61,7 +55,11 @@ def start_command(update: Update, context):
 
 def okay_lets_start(update: Update, context: CallbackContext):
     update.callback_query.answer()
-    u = User.objects.filter(user_id=extract_user_data_from_update(update)['user_id']).first()
+    u = User.get_user(update, context)
+    if not u.is_invited:
+        context.dispatcher.bot.send_message(chat_id=u.user_id, text=SORRY_INVITE_ONLY_MODE)
+        return ConversationHandler.END
+
     text_to_send = PLEASE_SEND_NAME
     context.dispatcher.bot.send_message(chat_id=extract_user_data_from_update(update)['user_id'],
                                         text=text_to_send)
