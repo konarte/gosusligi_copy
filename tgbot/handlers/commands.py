@@ -56,9 +56,9 @@ def start_command(update: Update, context):
 def okay_lets_start(update: Update, context: CallbackContext):
     update.callback_query.answer()
     u = User.get_user(update, context)
-    if not u.is_invited:
-        context.dispatcher.bot.send_message(chat_id=u.user_id, text=SORRY_INVITE_ONLY_MODE)
-        return ConversationHandler.END
+#     if not u.is_invited:
+#         context.dispatcher.bot.send_message(chat_id=u.user_id, text=SORRY_INVITE_ONLY_MODE)
+#         return ConversationHandler.END
 
     text_to_send = PLEASE_SEND_NAME
     context.dispatcher.bot.send_message(chat_id=extract_user_data_from_update(update)['user_id'],
